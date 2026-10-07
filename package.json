@@ -1,6 +1,6 @@
 {
   "name": "@odyseusz426/claude-jira",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Jira integration for Claude Code — task writing, ticket management (SDD extension)",
   "type": "module",
   "bin": {

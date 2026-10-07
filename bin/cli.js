@@ -12,16 +12,16 @@ const force = args.includes("--force");
 
 function copy(from, to, label) {
   if (!existsSync(from)) {
-    console.error(`Source not found: ${from}`);
+    console.error(`Zrodlo nie znalezione: ${from}`);
     process.exit(1);
   }
   if (existsSync(to) && !force) {
-    console.error(`Target already exists: ${to}`);
-    console.error(`Use --force to overwrite.`);
+    console.error(`Cel juz istnieje: ${to}`);
+    console.error(`Uzyj --force zeby nadpisac.`);
     process.exit(1);
   }
   cpSync(from, to, { recursive: true, force });
-  console.log(`\u2713 ${label || from} \u2192 ${to}${force ? " (overwritten)" : ""}`);
+  console.log(`\u2713 ${label || from} \u2192 ${to}${force ? " (nadpisano)" : ""}`);
 }
 
 switch (command) {
@@ -50,16 +50,16 @@ switch (command) {
     console.log(`\u2713 atlassian mcp config \u2192 ${mcpDst} (merged)`);
 
     console.log(`
-Jira toolkit installed.
+Jira toolkit zainstalowany.
 
-Commands: /task
-Agents:   task-writer, jira-reader
-Skills:   jira-read
+Komendy:  /task
+Agenci:   task-writer, jira-reader
+Skille:   jira-read
 MCP:      atlassian (transeu.atlassian.net)
 
-After install, authenticate: /mcp → atlassian → Authenticate
+Po instalacji autoryzuj: /mcp → atlassian → Authenticate
 
-Requires @odyseusz426/claude-npm-sdd as base framework.
+Wymaga @odyseusz426/claude-npm-sdd jako bazowy framework.
 `);
     break;
   }
@@ -69,12 +69,12 @@ Requires @odyseusz426/claude-npm-sdd as base framework.
     break;
   default:
     console.log(`
-Claude Jira v${pkg.version} \u2014 Jira integration toolkit
+Claude Jira v${pkg.version} \u2014 integracja z Jira
 
-Usage:
-  claude-jira init              copy agents, skills, commands & MCP config into project
-  claude-jira init --force      overwrite existing files
-  claude-jira --version         show version
+Uzycie:
+  claude-jira init              kopiuje agentow, skille, komendy i MCP config do projektu
+  claude-jira init --force      nadpisuje istniejace pliki
+  claude-jira --version         pokaz wersje
 `);
     process.exit(command ? 1 : 0);
 }
