@@ -125,7 +125,7 @@ Zauważ w powyższym przykładzie:
 
 Po napisaniu zadania **zawsze zapisz je do pliku** w katalogu `ai/tasks/` w repozytorium, którego dotyczy zmiana. Utwórz katalog jeśli nie istnieje.
 
-Konwencja nazwy pliku: `{FAP-NUMER}-{krotki-opis}.md` jeśli numer ticketu jest znany, albo `draft-{temat}-{numer-kolejny}.md` dla draftu bez numeru (np. `draft-ratings-01-feature-flag.md`).
+Konwencja nazwy pliku: `{TICKET-ID}-{krotki-opis}.md` jeśli numer ticketu jest znany (np. `PROJ-1234-feature-flag.md`), albo `draft-{temat}-{numer-kolejny}.md` dla draftu bez numeru (np. `draft-ratings-01-feature-flag.md`).
 
 Jeśli użytkownik prosi o kilka zadań naraz (np. "połącz w max 3 taski"), zapisz każde jako osobny plik.
 

@@ -9,7 +9,7 @@
     },
     {
       "command": "/jira",
-      "when": "Pobierz wymagania z ticketu Jira (FAP-XXXX) — opis, KA, komentarze, linked issues",
+      "when": "Pobierz wymagania z ticketu Jira (PROJ-XXXX) — opis, KA, komentarze, linked issues",
       "agent": "jira-reader"
     }
   ]
