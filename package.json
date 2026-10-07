@@ -1,0 +1,24 @@
+{
+  "name": "@odyseusz426/claude-jira",
+  "version": "1.0.0",
+  "description": "Jira integration for Claude Code — task writing, ticket management (SDD extension)",
+  "type": "module",
+  "bin": {
+    "claude-jira": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "templates",
+    "skills.json"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/odyseusz426/claude-jira.git"
+  },
+  "author": "Marcin Lubiejewski",
+  "license": "MIT"
+}

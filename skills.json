@@ -1,0 +1,16 @@
+{
+  "package": "@odyseusz426/claude-jira",
+  "label": "Jira Integration",
+  "skills": [
+    {
+      "command": "/task",
+      "when": "Napisz zadanie developerskie z analizą kodu — gotowe do Jira (Description, KA, Test info, Tech info)",
+      "agent": "task-writer"
+    },
+    {
+      "command": "/jira",
+      "when": "Pobierz wymagania z ticketu Jira (FAP-XXXX) — opis, KA, komentarze, linked issues",
+      "agent": "jira-reader"
+    }
+  ]
+}
