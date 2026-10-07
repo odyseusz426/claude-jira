@@ -1,12 +1,12 @@
 ---
 name: jira-read
-description: Jak czytać issue Jira FAP-<numer> — opis, kryteria akceptacji, komentarze, powiązane issue — i skondensować w brief wymagań. Read-only; nigdy nie zapisuje do Jiry.
+description: Jak czytać issue Jira (PROJ-numer) — opis, kryteria akceptacji, komentarze, powiązane issue — i skondensować w brief wymagań. Read-only; nigdy nie zapisuje do Jiry.
 when_to_use: Ładowany przez subagenta `jira-reader`. W głównym wątku deleguj do tego agenta zamiast czytać ten skill — dzięki temu surowy payload Jiry nie trafi do głównego okna kontekstu.
 ---
 
 # Czytanie issue Jiry
 
-Instancja: `transeu.atlassian.net`. Nazwy narzędzi poniżej są zapisane bez prefiksu.
+Instancja: wykrywana automatycznie przez `getAccessibleAtlassianResources`. Nazwy narzędzi poniżej są zapisane bez prefiksu.
 
 ## Główna zasada
 

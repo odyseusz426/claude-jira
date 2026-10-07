@@ -1,6 +1,6 @@
 ---
-description: Pobierz wymagania z ticketu Jira (FAP-XXXX) — opis, KA, komentarze, linked issues
-argument-hint: <FAP-XXXX>
+description: Pobierz wymagania z ticketu Jira (PROJ-XXXX) — opis, KA, komentarze, linked issues
+argument-hint: <PROJ-XXXX>
 ---
 
 # /jira — Pobierz wymagania z Jira
@@ -16,14 +16,14 @@ argument-hint: <FAP-XXXX>
 Deleguj do subagenta narzedziem Task. Agent zwraca brief — sesja glowna prezentuje uzytkownikowi.
 
 ```
-/jira FAP-1234
+/jira PROJ-1234
 ```
 
 ---
 
 ## Krok 1: Walidacja
 
-Sprawdz czy argument zawiera klucz issue (format: `FAP-XXXX`). Jesli brak — zapytaj uzytkownika o numer.
+Sprawdz czy argument zawiera klucz issue (format: `[A-Z]+-\d+`, np. FAP-1234, PROJ-567). Jesli brak — zapytaj uzytkownika o numer.
 
 ---
 
@@ -32,7 +32,7 @@ Sprawdz czy argument zawiera klucz issue (format: `FAP-XXXX`). Jesli brak — za
 Deleguj do `jira-reader` z kluczem issue.
 
 Agent:
-1. Laczy sie z `transeu.atlassian.net` przez Atlassian MCP
+1. Laczy sie z instancja Jira (auto-detect) przez Atlassian MCP
 2. Pobiera opis, acceptance criteria, komentarze, linked issues, parent epic
 3. Kondensuje do briefu (surowy payload zostaje wewnatrz agenta)
 4. Zwraca brief w formacie: issue line, **Requirements**, **Open questions**

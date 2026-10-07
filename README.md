@@ -32,15 +32,15 @@ claude-jira --version          # wersja paczki
 /mcp → atlassian → Authenticate
 
 # W Claude Code:
-/jira FAP-1234
+/jira PROJ-1234
 /task "Dodaj notyfikacje o wygasajacych licencjach w monitoringu"
 ```
 
 ## Co robi
 
-### `/jira FAP-XXXX` — Czytanie ticketow z Jiry
+### `/jira PROJ-XXXX` — Czytanie ticketow z Jiry
 
-Agent `jira-reader` (model: haiku) pobiera issue z `transeu.atlassian.net`:
+Agent `jira-reader` (model: haiku) pobiera issue z instancji Jira (auto-detect przez Atlassian MCP):
 1. Opis i acceptance criteria
 2. Komentarze (tam czesto siedza prawdziwe wymagania)
 3. Linked issues i parent epic

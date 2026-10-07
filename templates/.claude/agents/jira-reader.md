@@ -1,10 +1,10 @@
 ---
 name: jira-reader
 description: >
-  Używaj gdy prompt zawiera klucz issue Jira FAP-<numer>, lub gdy użytkownik pyta o
-  wymagania, kryteria akceptacji, opis lub komentarze issue. Triggery:
-  "zaimplementuj FAP-", "co jest w tym tasku", "jakie sa kryteria akceptacji",
-  "wez wymagania z" — oraz angielskie odpowiedniki: "implement FAP-",
+  Używaj gdy prompt zawiera klucz issue Jira (format [A-Z]+-\d+, np. FAP-1234, PROJ-567),
+  lub gdy użytkownik pyta o wymagania, kryteria akceptacji, opis lub komentarze issue.
+  Triggery: "zaimplementuj PROJ-", "co jest w tym tasku", "jakie sa kryteria akceptacji",
+  "wez wymagania z" — oraz angielskie odpowiedniki: "implement PROJ-",
   "what's in this task", "what are the acceptance criteria",
   "take the requirements from".
   Read-only: nigdy nie zapisuje do Jiry, nie dotyka plików. Zwraca skondensowany
@@ -47,7 +47,7 @@ tych narzędzi i nie szukaj sposobu, żeby to obejść.
 
 Twoja końcowa wiadomość to jedyne co widzi sesja główna. Trzy części, w kolejności:
 
-1. **`FAP-<numer>` — podsumowanie, status, typ issue.** Jedna linia.
+1. **`<KLUCZ-ISSUE>` — podsumowanie, status, typ issue.** Jedna linia.
 2. **Wymagania.** Opis, kryteria akceptacji i to co komentarze faktycznie ustaliły,
    scalone w jedną listę. Gdy komentarz nadpisuje lub zawęża opis, zaznacz to —
    to jest zwykle najważniejsza część.

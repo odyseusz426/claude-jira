@@ -55,7 +55,7 @@ Jira toolkit zainstalowany.
 Komendy:  /task
 Agenci:   task-writer, jira-reader
 Skille:   jira-read
-MCP:      atlassian (transeu.atlassian.net)
+MCP:      atlassian (auto-detect instancji)
 
 Po instalacji autoryzuj: /mcp → atlassian → Authenticate
 
