@@ -27,6 +27,13 @@ function copy(from, to, label) {
 switch (command) {
   case "init": {
     const cwd = process.cwd();
+    if (!existsSync(join(cwd, ".claude"))) {
+      console.error(
+        "Brak katalogu .claude/ w biezacym projekcie.\n" +
+        "Najpierw uruchom: npx @odyseusz426/claude-npm-sdd init (sdd init)"
+      );
+      process.exit(1);
+    }
     const agentsSrc = join(templates, ".claude", "agents");
     const commandsSrc = join(templates, ".claude", "commands");
     const skillsSrc = join(templates, ".claude", "skills");
