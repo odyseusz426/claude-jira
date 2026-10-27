@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, cpSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, symlinkSync, lstatSync, unlinkSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
@@ -13,19 +13,61 @@ const force = args.includes("--force");
 
 const sddHome = join(homedir(), ".sdd");
 const userClaude = join(homedir(), ".claude");
+const isWin = process.platform === "win32";
 
-function copy(from, to, label) {
-  if (!existsSync(from)) {
-    console.error(`Zrodlo nie znalezione: ${from}`);
+function portableLink(target, linkPath) {
+  try {
+    const stat = lstatSync(linkPath);
+    if (stat.isSymbolicLink()) {
+      if (force) unlinkSync(linkPath);
+      else return;
+    } else if (stat.isDirectory() || stat.isFile()) {
+      if (!force) {
+        console.error(`Cel juz istnieje: ${linkPath}`);
+        console.error(`Uzyj --force zeby nadpisac.`);
+        process.exit(1);
+      }
+      if (isWin) {
+        cpSync(target, linkPath, { recursive: true, force: true });
+        return;
+      }
+      unlinkSync(linkPath);
+    }
+  } catch { /* doesn't exist */ }
+
+  if (isWin) {
+    try {
+      if (statSync(target).isDirectory()) {
+        symlinkSync(target, linkPath, "junction");
+        return;
+      }
+    } catch { /* */ }
+    mkdirSync(dirname(linkPath), { recursive: true });
+    copyFileSync(target, linkPath);
+    return;
+  }
+
+  mkdirSync(dirname(linkPath), { recursive: true });
+  symlinkSync(target, linkPath);
+}
+
+function linkDir(srcDir, dstDir, label) {
+  if (!existsSync(srcDir)) {
+    console.error(`Zrodlo nie znalezione: ${srcDir}`);
     process.exit(1);
   }
-  if (existsSync(to) && !force) {
-    console.error(`Cel juz istnieje: ${to}`);
-    console.error(`Uzyj --force zeby nadpisac.`);
-    process.exit(1);
+  if (!existsSync(dstDir)) mkdirSync(dstDir, { recursive: true });
+
+  for (const entry of readdirSync(srcDir, { withFileTypes: true })) {
+    const src = join(srcDir, entry.name);
+    const dst = join(dstDir, entry.name);
+    if (entry.isDirectory()) {
+      linkDir(src, dst);
+    } else {
+      portableLink(src, dst);
+    }
   }
-  cpSync(from, to, { recursive: true, force });
-  console.log(`\u2713 ${label || from} \u2192 ${to}${force ? " (nadpisano)" : ""}`);
+  console.log(`\u2713 ${label || srcDir} \u2192 ${dstDir}${force ? " (nadpisano)" : ""}`);
 }
 
 switch (command) {
@@ -43,14 +85,14 @@ switch (command) {
     const skillsSrc = join(templates, ".claude", "skills");
     const mcpSrc = join(templates, ".claude", ".mcp.json");
 
-    // Install agents and commands to ~/.sdd/.claude/ (global)
+    // Link agents, commands, skills to ~/.sdd/.claude/ (global)
     const agentsDst = join(sddHome, ".claude", "agents");
     const commandsDst = join(sddHome, ".claude", "commands");
     const skillsDst = join(sddHome, ".claude", "skills");
 
-    copy(agentsSrc, agentsDst, "jira agents → ~/.sdd/.claude/agents");
-    copy(commandsSrc, commandsDst, "jira commands → ~/.sdd/.claude/commands");
-    copy(skillsSrc, skillsDst, "jira skills → ~/.sdd/.claude/skills");
+    linkDir(agentsSrc, agentsDst, "jira agents \u2192 ~/.sdd/.claude/agents");
+    linkDir(commandsSrc, commandsDst, "jira commands \u2192 ~/.sdd/.claude/commands");
+    linkDir(skillsSrc, skillsDst, "jira skills \u2192 ~/.sdd/.claude/skills");
 
     // Merge .mcp.json into ~/.claude/.mcp.json (user-level MCP config)
     const mcpDst = join(userClaude, ".mcp.json");
@@ -71,7 +113,7 @@ Agenci:   task-writer, jira-reader
 Skille:   jira-read
 MCP:      atlassian (auto-detect instancji)
 
-Po instalacji autoryzuj: /mcp → atlassian → Authenticate
+Po instalacji autoryzuj: /mcp \u2192 atlassian \u2192 Authenticate
 
 Wymaga @odyseusz426/claude-npm-sdd jako bazowy framework.
 `);

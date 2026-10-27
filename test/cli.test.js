@@ -110,16 +110,14 @@ describe("claude-jira CLI", () => {
       writeFileSync(userMcp, JSON.stringify(merged, null, 2) + "\n");
     });
 
-    it("refuses to overwrite without --force", () => {
+    it("is idempotent without --force (symlinks already exist)", () => {
       if (!sddInstalled) return;
 
       // First install
       run(["init", "--force"]);
-      // Second install without --force should fail
-      assert.throws(
-        () => run(["init"]),
-        (err) => err.status === 1
-      );
+      // Second install without --force — should succeed (symlinks are idempotent)
+      const out = run(["init"]);
+      assert.ok(out.includes("jira agents"));
     });
 
     it("overwrites with --force", () => {
