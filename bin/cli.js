@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, cpSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, cpSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { homedir } from "node:os";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const templates = join(root, "templates");
@@ -9,6 +10,9 @@ const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 
 const [command, ...args] = process.argv.slice(2);
 const force = args.includes("--force");
+
+const sddHome = join(homedir(), ".sdd");
+const userClaude = join(homedir(), ".claude");
 
 function copy(from, to, label) {
   if (!existsSync(from)) {
@@ -26,27 +30,30 @@ function copy(from, to, label) {
 
 switch (command) {
   case "init": {
-    const cwd = process.cwd();
-    if (!existsSync(join(cwd, ".claude"))) {
+    if (!existsSync(join(sddHome, ".claude"))) {
       console.error(
-        "Brak katalogu .claude/ w biezacym projekcie.\n" +
-        "Najpierw uruchom: npx @odyseusz426/claude-npm-sdd init (sdd init)"
+        "SDD framework nie jest zainstalowany.\n" +
+        "Najpierw uruchom: npm i -g @odyseusz426/claude-npm-sdd && sdd init"
       );
       process.exit(1);
     }
+
     const agentsSrc = join(templates, ".claude", "agents");
     const commandsSrc = join(templates, ".claude", "commands");
     const skillsSrc = join(templates, ".claude", "skills");
     const mcpSrc = join(templates, ".claude", ".mcp.json");
-    const agentsDst = join(cwd, ".claude", "agents");
-    const commandsDst = join(cwd, ".claude", "commands");
-    const skillsDst = join(cwd, ".claude", "skills");
-    const mcpDst = join(cwd, ".claude", ".mcp.json");
 
-    copy(agentsSrc, agentsDst, "jira agents");
-    copy(commandsSrc, commandsDst, "jira commands");
-    copy(skillsSrc, skillsDst, "jira skills");
-    // Merge .mcp.json instead of overwriting — preserve existing MCP servers
+    // Install agents and commands to ~/.sdd/.claude/ (global)
+    const agentsDst = join(sddHome, ".claude", "agents");
+    const commandsDst = join(sddHome, ".claude", "commands");
+    const skillsDst = join(sddHome, ".claude", "skills");
+
+    copy(agentsSrc, agentsDst, "jira agents → ~/.sdd/.claude/agents");
+    copy(commandsSrc, commandsDst, "jira commands → ~/.sdd/.claude/commands");
+    copy(skillsSrc, skillsDst, "jira skills → ~/.sdd/.claude/skills");
+
+    // Merge .mcp.json into ~/.claude/.mcp.json (user-level MCP config)
+    const mcpDst = join(userClaude, ".mcp.json");
     const mcpSnippet = JSON.parse(readFileSync(mcpSrc, "utf8"));
     let mcpTarget = {};
     if (existsSync(mcpDst)) {
@@ -54,12 +61,12 @@ switch (command) {
     }
     mcpTarget.mcpServers = { ...mcpTarget.mcpServers, ...mcpSnippet.mcpServers };
     writeFileSync(mcpDst, JSON.stringify(mcpTarget, null, 2) + "\n");
-    console.log(`\u2713 atlassian mcp config \u2192 ${mcpDst} (merged)`);
+    console.log(`\u2713 atlassian mcp config \u2192 ~/.claude/.mcp.json (merged)`);
 
     console.log(`
-Jira toolkit zainstalowany.
+Jira toolkit zainstalowany globalnie.
 
-Komendy:  /task
+Komendy:  /task, /jira
 Agenci:   task-writer, jira-reader
 Skille:   jira-read
 MCP:      atlassian (auto-detect instancji)
@@ -79,7 +86,7 @@ Wymaga @odyseusz426/claude-npm-sdd jako bazowy framework.
 Claude Jira v${pkg.version} \u2014 integracja z Jira
 
 Uzycie:
-  claude-jira init              kopiuje agentow, skille, komendy i MCP config do projektu
+  claude-jira init              instaluje agentow, skille, komendy globalnie (~/.sdd/.claude/)
   claude-jira init --force      nadpisuje istniejace pliki
   claude-jira --version         pokaz wersje
 `);
